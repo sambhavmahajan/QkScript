@@ -3,12 +3,23 @@
 #include <unordered_map>
 using namespace std;
 
+void parseLine(const string &s);
+
 typedef void (*CommandFunc)(const string&);
 void cmdPrint(const string& arg){
     cout << arg << '\n';
 }
+void cmdRepeat(const string& arg){
+	int intSize = arg.find(' ');
+	int i = stoi(arg.substr(0,intSize));
+	const string s = arg.substr(intSize + 1);
+	while(i-- > 0){
+		parseLine(s);
+	}
+}
 unordered_map<string, CommandFunc> commandMap = {
-    {"print", cmdPrint}
+    {"print", cmdPrint},
+	{"repeat", cmdRepeat}
 };
 
 void parseLine(const string &s) {
