@@ -5,8 +5,7 @@ using namespace std;
 
 typedef void (*CommandFunc)(const string&);
 void cmdPrint(const string& arg){
-    if(arg.size() == 6) return;
-    cout << arg.substr(5,arg.size()) << '\n';
+    cout << arg << '\n';
 }
 unordered_map<string, CommandFunc> commandMap = {
     {"print", cmdPrint}
@@ -17,7 +16,7 @@ void parseLine(const string &s) {
     if (spacePos != string::npos) {
         string command = s.substr(0, spacePos);
         if (commandMap.count(command)) {
-            cout << s.substr(spacePos + 1) << '\n';
+            commandMap[command](s.substr(spacePos + 1));
             return;
         }
     }
