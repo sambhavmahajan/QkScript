@@ -23,6 +23,7 @@ void lTrim(string &s, int& start, int end){
         ++start;
     }
     s = s.substr(start, end - start + 1);
+    start = 0;
 }
 void rTrim(string &s, int start, int& end){
     while(end >= start && (s[end] == ' ' || s[end] == '\t')){
@@ -168,7 +169,6 @@ void run(string &s,int pass){
 
 int main() {
     string s;
-    int temp;
     while (running) {
         run(s,0);
     }
