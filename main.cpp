@@ -4,6 +4,8 @@
 #include <fstream>
 using namespace std;
 
+bool running = true;
+
 void trim(string&);
 void formatString(string&);
 void cmdPrint(string&);
@@ -12,19 +14,26 @@ void cmdVar(string&);
 void cmdOpen(string&);
 void cmdWrite(string&);
 void cmdClose(string&);
+void cmdReturn(string&);
 void parseLine(string&);
 
 //helper functions
-void trim(string &s){
-    int start = 0, end = s.size() - 1;
+void lTrim(string &s, int& start, int end){
     while(start <= end && (s[start] == ' ' || s[start] == '\t')){
         ++start;
     }
-    
+    s = s.substr(start, end - start + 1);
+}
+void rTrim(string &s, int start, int& end){
     while(end >= start && (s[end] == ' ' || s[end] == '\t')){
         --end;
     }
     s = s.substr(start, end - start + 1);
+}
+void trim(string &s){
+    int start = 0, end = s.size() - 1;
+    lTrim(s, start, end);
+    rTrim(s, start, end);
 }
 
 unordered_map<string,string> varMap;
@@ -62,6 +71,7 @@ void formatString(string &s) {
 typedef void (*CommandFunc)(string&);
 
 unordered_map<string, CommandFunc> commandMap = {
+    {"return", cmdReturn},
     {"print", cmdPrint},
 	{"repeat", cmdRepeat},
     {"var", cmdVar},
@@ -127,6 +137,15 @@ void cmdClose(string&){
     ptr = nullptr;
     cout<<fileName<<" closed.\n";
 }
+void cmdReturn(string&){
+    if(ptr){
+        cout<<"Closing "<<fileName<<'\n';
+        ptr->close();
+        delete ptr;
+        cout<<fileName<<" closed.\n";
+    }
+    running = false;
+}
 void parseLine(string &s) {
     auto spacePos = s.find(' ');
     string command = s.substr(0, spacePos);
@@ -140,21 +159,18 @@ void parseLine(string &s) {
     cout << "Error: no such command as " << s << '\n';
 }
 
+void run(string &s,int pass){
+    cout << "command: ";
+    getline(cin, s);
+    lTrim(s, pass,s.size() - 1);
+    parseLine(s);
+}
+
 int main() {
     string s;
-    while (true) {
-        cout << "command: ";
-        getline(cin, s);
-        if (!s.compare("return")) {
-            if(ptr){
-                cout<<"Closing "<<fileName<<'\n';
-                ptr->close();
-                delete ptr;
-                cout<<fileName<<" closed.\n";
-            }
-            return 0;
-        }
-        else parseLine(s);
+    int temp;
+    while (running) {
+        run(s,0);
     }
     return 0;
 }
