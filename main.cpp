@@ -28,18 +28,28 @@ void trim(string &s){
 }
 
 unordered_map<string,string> varMap;
+unordered_map<string, string> escCharMap = 
+{
+    {"\\n", "\n"},
+    {"\\t", "\t"},
+    {"\\r", "\r"},
+    {"\\\"", "\""},
+    {"\\\\", "\\"}
+};
 
 void formatString(string &s) {
     for(auto it = varMap.begin(); it != varMap.end(); ++it){
         size_t pos = 0;
+        while(pos < s.size() && (pos = s.find('$' + it->first,pos)) != string::npos){
+            s.replace(pos, it->first.size() + 1, it->second);
+            pos += it->second.size();
+        }
+    }
+    for(auto it = escCharMap.begin(); it != escCharMap.end(); ++it){
+        size_t pos = 0;
         while(pos < s.size() && (pos = s.find(it->first,pos)) != string::npos){
-            if(pos - 1 >= 0 && s[pos-1] == '$'){
-                s.replace(pos - 1, 1,"");
-                pos += it->first.size();
-            }else{
-                s.replace(pos, it->first.size(), it->second);
-                pos += -it->second.size();
-            }
+            s.replace(pos, it->first.size(), it->second);
+            pos += it->second.size();
         }
     }
 }
@@ -70,11 +80,13 @@ void cmdRepeat(string& arg){
 	}
 }
 void cmdVar(string &arg){
-    int idx = arg.find(' ');
+    int idx = arg.find('=');
     string varName = arg.substr(0, idx);
+    trim(varName);
     idx = arg.find('=') + 1;
     string varValue = arg.substr(idx);
     trim(varValue);
+    formatString(varValue);
     varMap[varName] = varValue;
 }
 

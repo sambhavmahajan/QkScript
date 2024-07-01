@@ -38,14 +38,11 @@ The program recognizes the following commands:
    
    ```plaintext
    command: var name = John
-   command: print Hello, name
-   Hello, John
+   command: print Hello\n$name
+   Hello
+   John
    command: open output.txt
    command: write This is a test.
    command: close
    ```
-
-## Notes
-
-- **Exit**: To exit the program, enter `return`. Ensure no files are open before exiting.
 
