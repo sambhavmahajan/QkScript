@@ -41,8 +41,13 @@ void formatString(string &s) {
     for(auto it = varMap.begin(); it != varMap.end(); ++it){
         size_t pos = 0;
         while(pos < s.size() && (pos = s.find('$' + it->first,pos)) != string::npos){
-            s.replace(pos, it->first.size() + 1, it->second);
-            pos += it->second.size();
+            if(pos - 1 >= 0 && s[pos - 1] == '\\'){
+                s.erase(pos - 1, 1);
+                pos += it->first.size();
+            }else{
+                s.replace(pos, it->first.size() + 1, it->second);
+                pos += it->second.size();
+            }
         }
     }
     for(auto it = escCharMap.begin(); it != escCharMap.end(); ++it){
@@ -142,4 +147,3 @@ int main() {
     }
     return 0;
 }
-
