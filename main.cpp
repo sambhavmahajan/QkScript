@@ -6,6 +6,8 @@ using namespace std;
 
 bool running = true;
 
+void lTrim(string&);
+void rTrim(string&);
 void trim(string&);
 void formatString(string&);
 void cmdPrint(string&);
@@ -18,23 +20,24 @@ void cmdReturn(string&);
 void parseLine(string&);
 
 //helper functions
-void lTrim(string &s, int& start, int end){
-    while(start <= end && (s[start] == ' ' || s[start] == '\t')){
+void lTrim(string &s) {
+    size_t start = 0;
+    while (start < s.size() && (s[start] == ' ' || s[start] == '\t')) {
         ++start;
     }
-    s = s.substr(start, end - start + 1);
-    start = 0;
+    s = s.substr(start);
 }
-void rTrim(string &s, int start, int& end){
-    while(end >= start && (s[end] == ' ' || s[end] == '\t')){
+
+void rTrim(string &s) {
+    size_t end = s.size();
+    while (end > 0 && (s[end - 1] == ' ' || s[end - 1] == '\t')) {
         --end;
     }
-    s = s.substr(start, end - start + 1);
+    s = s.substr(0, end);
 }
 void trim(string &s){
-    int start = 0, end = s.size() - 1;
-    lTrim(s, start, end);
-    rTrim(s, start, end);
+    lTrim(s);
+    rTrim(s);
 }
 
 unordered_map<string,string> varMap;
@@ -160,17 +163,17 @@ void parseLine(string &s) {
     cout << "Error: no such command as " << s << '\n';
 }
 
-void run(string &s,int pass){
+void run(string &s){
     cout << "command: ";
     getline(cin, s);
-    lTrim(s, pass,s.size() - 1);
+    lTrim(s);
     parseLine(s);
 }
 
 int main() {
     string s;
     while (running) {
-        run(s,0);
+        run(s);
     }
     return 0;
 }
