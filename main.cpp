@@ -96,6 +96,7 @@ void cmdVar(string &arg){
 }
 
 ofstream *ptr = nullptr;
+string fileName = "";
 void cmdOpen(string &arg){
     trim(arg);
     if(ptr) cmdClose(arg);
@@ -104,7 +105,9 @@ void cmdOpen(string &arg){
         cout << "Error: Could not open file." << arg << '\n';
         delete ptr;
         ptr = nullptr;
+        return;
     }
+    fileName = arg;
 }
 void cmdWrite(string &arg){
     if(!ptr){
@@ -115,10 +118,14 @@ void cmdWrite(string &arg){
     (*ptr)<<arg;
 }
 void cmdClose(string&){
-    if(!ptr) return;
+    if(!ptr){
+        cout<<"No file open.\n";
+    }
+    cout<<"Closing "<<fileName<<'\n';
     ptr->close();
     delete ptr;
     ptr = nullptr;
+    cout<<fileName<<" closed.\n";
 }
 void parseLine(string &s) {
     auto spacePos = s.find(' ');
@@ -140,8 +147,12 @@ int main() {
         getline(cin, s);
         if (!s.compare("return")) {
             if(ptr){
-                cout<<"Error: A file is open, can not exit.\n";
-            }else return 0;
+                cout<<"Closing "<<fileName<<'\n';
+                ptr->close();
+                delete ptr;
+                cout<<fileName<<" closed.\n";
+            }
+            return 0;
         }
         else parseLine(s);
     }
