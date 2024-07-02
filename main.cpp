@@ -88,7 +88,7 @@ unordered_map<string, CommandFunc> commandMap = {
 //command functions
 void cmdPrint(string& arg){
     formatString(arg);
-    cout << arg << '\n';
+    cout << arg;
 }
 void cmdRepeat(string& arg){
 	int intSize = arg.find(' ');
@@ -164,7 +164,7 @@ void parseLine(string &s) {
 }
 
 void run(string &s){
-    cout << "command: ";
+    cout << "\ncommand: ";
     getline(cin, s);
     lTrim(s);
     parseLine(s);
