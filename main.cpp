@@ -4,8 +4,6 @@
 #include <fstream>
 using namespace std;
 
-bool running = true;
-
 void lTrim(string&);
 void rTrim(string&);
 void trim(string&);
@@ -17,7 +15,23 @@ void cmdOpen(string&);
 void cmdWrite(string&);
 void cmdClose(string&);
 void cmdReturn(string&);
+void cmdHistory(string&);
 void parseLine(string&);
+
+//global variables
+bool running = true;
+ofstream *ptr = nullptr;
+string fileName = "";
+unordered_map<string,string> varMap;
+unordered_map<string, string> escCharMap = 
+{
+    {"\\n", "\n"},
+    {"\\t", "\t"},
+    {"\\r", "\r"},
+    {"\\\"", "\""},
+    {"\\\\", "\\"}
+};
+ofstream history_file("command_history", ios::app);
 
 //helper functions
 void lTrim(string &s) {
@@ -39,16 +53,6 @@ void trim(string &s){
     lTrim(s);
     rTrim(s);
 }
-
-unordered_map<string,string> varMap;
-unordered_map<string, string> escCharMap = 
-{
-    {"\\n", "\n"},
-    {"\\t", "\t"},
-    {"\\r", "\r"},
-    {"\\\"", "\""},
-    {"\\\\", "\\"}
-};
 
 void formatString(string &s) {
     for(auto it = varMap.begin(); it != varMap.end(); ++it){
@@ -81,7 +85,8 @@ unordered_map<string, CommandFunc> commandMap = {
     {"var", cmdVar},
     {"open", cmdOpen},
     {"close", cmdClose},
-    {"write",cmdWrite}
+    {"write",cmdWrite},
+    {"history", cmdHistory}
 };
 
 
@@ -109,8 +114,6 @@ void cmdVar(string &arg){
     varMap[varName] = varValue;
 }
 
-ofstream *ptr = nullptr;
-string fileName = "";
 void cmdOpen(string &arg){
     trim(arg);
     if(ptr) cmdClose(arg);
@@ -134,6 +137,7 @@ void cmdWrite(string &arg){
 void cmdClose(string&){
     if(!ptr){
         cout<<"No file open.\n";
+        return;
     }
     cout<<"Closing "<<fileName<<'\n';
     ptr->close();
@@ -142,7 +146,11 @@ void cmdClose(string&){
     cout<<fileName<<" closed.\n";
 }
 void cmdReturn(string&){
+    if(history_file.is_open()){
+        history_file.close();
+    }
     if(ptr){
+        
         cout<<"Closing "<<fileName<<'\n';
         ptr->close();
         delete ptr;
@@ -150,7 +158,29 @@ void cmdReturn(string&){
     }
     running = false;
 }
+void cmdHistory(string &arg){
+    if(history_file.is_open()) history_file.close();
+    ifstream temp("command_history");
+    trim(arg);
+    if(arg.compare("")){
+        cout<<"Error: history does not takes any arguments.\n";
+        return;
+    }
+    if(!temp.is_open()){
+        cout<<"Error: could not open history file.\n";
+        return;
+    }
+    string line;
+    while(getline(temp, line)){
+        cout<<line<<'\n';
+    }
+    temp.close();
+    history_file.open("command_history", ios::app);
+}
 void parseLine(string &s) {
+    if(history_file.is_open()){
+        history_file<<s<<'\n';
+    }
     auto spacePos = s.find(' ');
     string command = s.substr(0, spacePos);
     if (spacePos == string::npos) spacePos = s.size() - 1;
