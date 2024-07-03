@@ -114,7 +114,7 @@ string fileName = "";
 void cmdOpen(string &arg){
     trim(arg);
     if(ptr) cmdClose(arg);
-    ptr = new ofstream(arg);
+    ptr = new ofstream(arg, ios::app);
     if (!ptr->is_open()) {
         cout << "Error: Could not open file." << arg << '\n';
         delete ptr;
