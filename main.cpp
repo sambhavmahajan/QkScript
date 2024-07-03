@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iomanip>
 #include <filesystem>
+#include <limits.h>
 using namespace std;
 
 void lTrim(string&);
@@ -124,22 +125,45 @@ void cmdPrint(string& arg){
     cout << arg <<'\n';
 }
 void cmdRepeat(string& arg){
-	int intSize = arg.find(' ');
-	int i = stoi(arg.substr(0,intSize));
+	size_t intSize = arg.find(' ');
+    if(intSize == string::npos){
+        cout<<"Error: Bad syntax.\n";
+        return;
+    }
+	int i;
+    try{
+        i = stoi(arg.substr(0,intSize));
+        if(i < 0){
+            cout << "Can not repeat negative times.\n";
+            return;
+        }
+    } catch (const invalid_argument& e) {
+        cout << "Can only repeat integer times.\n";
+        return;
+    } catch (const out_of_range& e) {
+        cout<< "Out of range: can only repeat "<< INT_MAX << " times.\n";
+        return;
+    }
 	string s = arg.substr(intSize + 1);
 	while(i-- > 0){
 		parseLine(s);
 	}
 }
 void cmdVar(string &arg){
-    int idx = arg.find('=');
+    size_t idx = arg.find('=');
+    if(idx == string::npos){
+        cout<<"A variable must be assigned.\n";
+    }
     string varName = arg.substr(0, idx);
     trim(varName);
-    idx = arg.find('=') + 1;
-    string varValue = arg.substr(idx);
-    trim(varValue);
-    formatString(varValue);
-    varMap[varName] = varValue;
+    if(++idx < arg.size()){
+        string varValue = "";
+        varValue = arg.substr(idx);
+        trim(varValue);
+        formatString(varValue);
+        varMap[varName] = varValue;
+    }
+    varMap[varName] = "";
 }
 
 void cmdOpen(string &arg){
@@ -155,7 +179,7 @@ void cmdOpen(string &arg){
     fileName = arg;
 }
 void cmdWrite(string &arg){
-    if(!ptr){
+    if(!ptr || !ptr->is_open()){
         cout<<"Error: No file is open.\n";
         return;
     }
@@ -168,7 +192,7 @@ void cmdClose(string&){
         return;
     }
     cout<<"Closing "<<fileName<<'\n';
-    ptr->close();
+    if(ptr->is_open()) ptr->close();
     delete ptr;
     ptr = nullptr;
     cout<<fileName<<" closed.\n";
@@ -178,9 +202,8 @@ void cmdReturn(string&){
         history_file.close();
     }
     if(ptr){
-        
         cout<<"Closing "<<fileName<<'\n';
-        ptr->close();
+        if(ptr->is_open()) ptr->close();
         delete ptr;
         cout<<fileName<<" closed.\n";
     }
