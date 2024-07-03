@@ -13,12 +13,17 @@ This C++ program implements a command interpreter that allows users to execute v
 
 The program recognizes the following commands:
 
-- `print <message>`: Prints a formatted message with variable substitutions.
-- `repeat <n> <command>`: Repeats a command `n` times.
-- `var <name> = <value>`: Defines or updates a variable.
-- `open <filename>`: Opens a file for writing.
-- `write <content>`: Writes content to the currently open file.
-- `close`: Closes the currently open file.
+- `print <message>`: Prints a message.
+- `repeat <n> <command>`: Repeats command(s) n times.
+- `var <name> = <value>`: Declares or updates a variable.
+- `print $<varname>`: Fetches the value of a variable.
+- `open <filename>`: Opens or creates a file for writing.
+- `write <content>`: Writes content to the opened file.
+- `close`: Closes the currently opened file.
+- `return`: Closes the terminal.
+- `history`: Gives the command history.
+- `read <filename>`: Reads content of a file.
+- `help`: Gives list of all commands.
 
 ## Usage
 
