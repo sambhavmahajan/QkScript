@@ -42,7 +42,6 @@ The program recognizes the following commands:
 3. **Commands**: Enter commands at the prompt. Example usage:
    
    ```plaintext
-   command: var name = John
     command: history
     return
     history
