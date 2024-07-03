@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <fstream>
+#include <iomanip>
 using namespace std;
 
 void lTrim(string&);
@@ -37,9 +38,9 @@ ofstream history_file("command_history", ios::app);
 const string helper_text[] = {
         "print <message>: Prints a message.",
         "repeat <n> <command>: Repeats command(s) n times.",
-        "var <name> = <value>: Declares or updates a variable",
-        "print $<varname>: Fetches the value of a variable",
-        "open <filename>: Opens a file for writing.",
+        "var <name> = <value>: Declares or updates a variable.",
+        "print $<varname>: Fetches the value of a variable.",
+        "open <filename>: Opens or creates a file for writing.",
         "write <content>: Writes content to the opened file.",
         "close: Closes the currently opened file.",
         "return: Closes the terminal.",
@@ -109,11 +110,10 @@ unordered_map<string, CommandFunc> commandMap = {
 
 //command functions
 void cmdHelp(string&){
-    cout<<'\n';
-    for(string s : helper_text){
-        cout<<s<<'\n';
+    size_t i = 0;
+    for(const string &s : helper_text){
+        cout<<setw(5)<<++i<<"  "<<s<<'\n';
     }
-    cout<<'\n';
 }
 void cmdPrint(string& arg){
     formatString(arg);
@@ -195,8 +195,9 @@ void cmdHistory(string &arg){
         return;
     }
     string line;
+    size_t i = 0;
     while(getline(temp, line)){
-        cout<<line<<'\n';
+        cout<<setw(5)<<++i<<"  "<<line<<'\n';
     }
     temp.close();
     history_file.open("command_history", ios::app);
