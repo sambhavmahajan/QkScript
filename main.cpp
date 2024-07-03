@@ -17,6 +17,7 @@ void cmdClose(string&);
 void cmdReturn(string&);
 void cmdHistory(string&);
 void cmdRead(string&);
+void cmdHelp(string&);
 void parseLine(string&);
 
 //global variables
@@ -33,6 +34,19 @@ unordered_map<string, string> escCharMap =
     {"\\\\", "\\"}
 };
 ofstream history_file("command_history", ios::app);
+const string helper_text[] = {
+        "print <message>: Prints a message.",
+        "repeat <n> <command>: Repeats command(s) n times.",
+        "var <name> = <value>: Declares or updates a variable",
+        "print $<varname>: Fetches the value of a variable",
+        "open <filename>: Opens a file for writing.",
+        "write <content>: Writes content to the opened file.",
+        "close: Closes the currently opened file.",
+        "return: Closes the terminal.",
+        "history: Gives the command history.",
+        "read <filename>: Reads content of a file.",
+        "help: Gives list of all commands."
+    };
 
 //helper functions
 void lTrim(string &s) {
@@ -88,11 +102,19 @@ unordered_map<string, CommandFunc> commandMap = {
     {"close", cmdClose},
     {"write",cmdWrite},
     {"history", cmdHistory},
-    {"read", cmdRead}
+    {"read", cmdRead},
+    {"help", cmdHelp}
 };
 
 
 //command functions
+void cmdHelp(string&){
+    cout<<'\n';
+    for(string s : helper_text){
+        cout<<s<<'\n';
+    }
+    cout<<'\n';
+}
 void cmdPrint(string& arg){
     formatString(arg);
     cout << arg <<'\n';
