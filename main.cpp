@@ -16,6 +16,7 @@ void cmdWrite(string&);
 void cmdClose(string&);
 void cmdReturn(string&);
 void cmdHistory(string&);
+void cmdRead(string&);
 void parseLine(string&);
 
 //global variables
@@ -86,7 +87,8 @@ unordered_map<string, CommandFunc> commandMap = {
     {"open", cmdOpen},
     {"close", cmdClose},
     {"write",cmdWrite},
-    {"history", cmdHistory}
+    {"history", cmdHistory},
+    {"read", cmdRead}
 };
 
 
@@ -176,6 +178,19 @@ void cmdHistory(string &arg){
     }
     temp.close();
     history_file.open("command_history", ios::app);
+}
+void cmdRead(string &arg){
+    formatString(arg);
+    ifstream file(arg);
+    if (file.good()) {
+        string line;
+        while (getline(file, line)) {
+            cout << line << std::endl;
+        }
+        file.close();
+    } else {
+        std::cout << "File does not exist or cannot be opened.\n";
+    }
 }
 void parseLine(string &s) {
     if(history_file.is_open()){
