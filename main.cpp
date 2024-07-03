@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <fstream>
 #include <iomanip>
 #include <filesystem>
@@ -52,7 +53,11 @@ const string helper_text[] = {
         "help: Gives list of all commands.",
         "mkdir <foldername>: Creates a new folder."
     };
-
+const unordered_set<char> disallowedNameSet = {
+        ' ', '!', '#', '%', '&', '(', ')', '*', '+', ',', '-', '.', '/',
+        ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_',
+        '`', '{', '|', '}', '~'
+    };
 //helper functions
 void lTrim(string &s) {
     size_t start = 0;
@@ -152,10 +157,29 @@ void cmdRepeat(string& arg){
 void cmdVar(string &arg){
     size_t idx = arg.find('=');
     if(idx == string::npos){
-        cout<<"A variable must be assigned.\n";
+        cout<<"Error: A variable must be assigned.\n";
+        return;
     }
     string varName = arg.substr(0, idx);
     trim(varName);
+    if(varName.empty()){
+        cout<<"Error: Variable must have a name.\n";
+        return;
+    }
+    if(commandMap.find(varName) != commandMap.end()){
+        cout<<"Error: Variable name can not have the same name as a command.\n";
+        return;
+    }
+    if(isdigit(varName[0])){
+        cout<<"Error: Variable name can not start with a digit.\n";
+        return;
+    }
+    for(const char &c: varName){
+        if(!(isalnum(c) || c == '_')){
+            cout<<"Variable names can only contain alphanumeric characters and underscores\n";
+            return;
+        }
+    }
     if(++idx < arg.size()){
         string varValue = "";
         varValue = arg.substr(idx);
@@ -163,7 +187,7 @@ void cmdVar(string &arg){
         formatString(varValue);
         varMap[varName] = varValue;
     }
-    varMap[varName] = "";
+    else varMap[varName] = "";
 }
 
 void cmdOpen(string &arg){
