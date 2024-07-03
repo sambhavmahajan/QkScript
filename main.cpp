@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <iomanip>
+#include <filesystem>
 using namespace std;
 
 void lTrim(string&);
@@ -19,6 +20,7 @@ void cmdReturn(string&);
 void cmdHistory(string&);
 void cmdRead(string&);
 void cmdHelp(string&);
+void cmdMkdir(string&);
 void parseLine(string&);
 
 //global variables
@@ -46,7 +48,8 @@ const string helper_text[] = {
         "return: Closes the terminal.",
         "history: Gives the command history.",
         "read <filename>: Reads content of a file.",
-        "help: Gives list of all commands."
+        "help: Gives list of all commands.",
+        "mkdir <foldername>: Creates a new folder."
     };
 
 //helper functions
@@ -97,14 +100,15 @@ typedef void (*CommandFunc)(string&);
 unordered_map<string, CommandFunc> commandMap = {
     {"return", cmdReturn},
     {"print", cmdPrint},
-	{"repeat", cmdRepeat},
+    {"repeat", cmdRepeat},
     {"var", cmdVar},
     {"open", cmdOpen},
     {"close", cmdClose},
     {"write",cmdWrite},
     {"history", cmdHistory},
     {"read", cmdRead},
-    {"help", cmdHelp}
+    {"help", cmdHelp},
+    {"mkdir", cmdMkdir}
 };
 
 
@@ -208,18 +212,28 @@ void cmdRead(string &arg){
     if (file.good()) {
         string line;
         while (getline(file, line)) {
-            cout << line << std::endl;
+            cout << line << '\n';
         }
         file.close();
     } else {
-        std::cout << "File does not exist or cannot be opened.\n";
+        cout << "Error: File does not exist or cannot be opened.\n";
     }
+}
+void cmdMkdir(string& arg){
+    formatString(arg);
+    if(!arg.compare("")){
+        cout<<"Error: Missing <foldername>.\n";
+        return;
+    }
+    if(filesystem::create_directory(arg)){
+        cout<<"Folder created successfully.\n";
+    }else cout<<"Error: Could not create folder or it already exits.\n";
 }
 void parseLine(string &s) {
     if(history_file.is_open()){
         history_file<<s<<'\n';
     }
-    auto spacePos = s.find(' ');
+    size_t spacePos = s.find(' ');
     string command = s.substr(0, spacePos);
     if (spacePos == string::npos) spacePos = s.size() - 1;
     if (commandMap.count(command)) {
