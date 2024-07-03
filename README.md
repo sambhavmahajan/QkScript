@@ -43,11 +43,32 @@ The program recognizes the following commands:
    
    ```plaintext
    command: var name = John
-   command: print Hello\n$name
-   Hello
-   John
-   command: open output.txt
-   command: write This is a test.
-   command: close
+    command: history
+    return
+    history
+    command: print hello world
+    hello world
+    command: var name = Sambhav Mahajan
+    command: repeat 2 print hello $name
+    hello Sambhav Mahajan
+    hello Sambhav Mahajan
+    command: open test.txt
+    command: write hehe
+    command: write $name
+    command: close
+    Closing test.txt
+    test.txt closed.
+    command: read test.txt
+    heheSambhav Mahajan
+    command: open test.txt
+    command: write \nhehe
+    command: close
+    Closing test.txt
+    test.txt closed.
+    command: read test.txt
+    heheSambhav Mahajan
+    hehe
+    command: return
+
    ```
 
