@@ -2,6 +2,8 @@
 
 This C++ program implements a command interpreter that allows users to execute various commands interactively. It supports commands for printing, repeating actions, managing variables, file operations (open, write, close), and more.
 
+```Requirements: C++17 or later compiler.```
+
 ## Features
 
 - **Command Handling**: Processes user input to execute commands.
