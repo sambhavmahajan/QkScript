@@ -30,13 +30,13 @@ The program recognizes the following commands:
 1. **Compile**: Compile the program using a C++ compiler.
    
    ```bash
-   g++ main.cpp -o command_interpreter
+   g++ globals.cpp helper.cpp commands.cpp main.cpp -o o
    ```
 
 2. **Run**: Execute the compiled program.
 
    ```bash
-   ./command_interpreter
+   ./o
    ```
 
 3. **Commands**: Enter commands at the prompt. Example usage:
