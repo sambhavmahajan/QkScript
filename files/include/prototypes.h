@@ -1,0 +1,20 @@
+#ifndef QK_PROTOTYPES_H
+#define QK_PROTOTYPES_H
+#include <string>
+void lTrim(std::string&);
+void rTrim(std::string&);
+void trim(std::string&);
+void formatString(std::string&);
+void cmdPrint(std::string&);
+void cmdRepeat(std::string&);
+void cmdVar(std::string&);
+void cmdOpen(std::string&);
+void cmdWrite(std::string&);
+void cmdClose(std::string&);
+void cmdReturn(std::string&);
+void cmdHistory(std::string&);
+void cmdRead(std::string&);
+void cmdHelp(std::string&);
+void cmdMkdir(std::string&);
+void parseLine(std::string&);
+#endif
